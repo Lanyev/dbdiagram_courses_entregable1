@@ -1,56 +1,38 @@
+CREATE TABLE "course_videos" (
+  "id" uuid PRIMARY KEY,
+  "course_id" uuid NOT NULL,
+  "title" varchar NOT NULL,
+  "duration" time NOT NULL,
+  "video_url" varchar NOT NULL,
+  "img_url" varchar NOT NULL
+);
+
+CREATE TABLE "courses" (
+  "id" uuid PRIMARY KEY,
+  "teacher_id" uuid NOT NULL,
+  "level_id" uuid NOT NULL,
+  "title" varchar NOT NULL,
+  "description" varchar NOT NULL
+);
+
+CREATE TABLE "categories" (
+  "id" uuid PRIMARY KEY,
+  "name" varchar NOT NULL
+);
+
+CREATE TABLE "categories_courses" (
+  "id" uuid PRIMARY KEY,
+  "category_id" uuid NOT NULL,
+  "course_id" uuid NOT NULL
+);
+
 CREATE TABLE "users" (
   "id" uuid PRIMARY KEY,
   "first_name" varchar NOT NULL,
   "last_name" varchar NOT NULL,
   "email" varchar NOT NULL,
   "password" varchar NOT NULL,
-  "age" INT,
-  "nationality" varchar NOT NULL,
-  "cart" varchar NOT NULL
-);
-
-CREATE TABLE "courses" (
-  "id" uuid PRIMARY KEY,
-  "user_id" uuid NOT NULL,
-  "category_id" uuid NOT NULL,
-  "course_video_id" uuid NOT NULL,
-  "course_name" varchar NOT NULL,
-  "course_description" varchar NOT NULL,
-  "course_duration" INT NOT NULL,
-  "course_price" INT NOT NULL,
-  "course_level" varchar NOT NULL,
-  "course_teacher" varchar NOT NULL,
-  "course_image" varchar NOT NULL
-);
-
-CREATE TABLE "course_videos" (
-  "id" uuid PRIMARY KEY,
-  "video_name" varchar NOT NULL,
-  "img_url" varchar NOT NULL
-);
-
-CREATE TABLE "course_images" (
-  "id" uuid PRIMARY KEY,
-  "img_url" varchar NOT NULL
-);
-
-CREATE TABLE "categories" (
-  "id" uuid PRIMARY KEY,
-  "category_name" varchar NOT NULL
-);
-
-CREATE TABLE "carts" (
-  "id" uuid PRIMARY KEY,
-  "user_id" uuid NOT NULL,
-  "cart_id" uuid NOT NULL,
-  "total" money NOT NULL
-);
-
-CREATE TABLE "carts_courses" (
-  "id" uuid PRIMARY KEY,
-  "course_id" uuid NOT NULL,
-  "cart_id" uuid NOT NULL,
-  "quantity" INT NOT NULL
+  "age" int
 );
 
 CREATE TABLE "users_courses" (
@@ -59,29 +41,46 @@ CREATE TABLE "users_courses" (
   "course_id" uuid NOT NULL
 );
 
+CREATE TABLE "teachers" (
+  "id" uuid PRIMARY KEY,
+  "first_name" varchar NOT NULL,
+  "last_name" varchar NOT NULL,
+  "img_url" varchar NOT NULL
+);
+
+CREATE TABLE "levels" (
+  "id" uuid PRIMARY KEY,
+  "name" varchar NOT NULL
+);
+
 CREATE TABLE "reviews" (
   "id" uuid PRIMARY KEY,
   "user_id" uuid NOT NULL,
   "course_id" uuid NOT NULL,
-  "review" varchar NOT NULL
+  "rating" int NOT NULL,
+  "comment" varchar NOT NULL
 );
 
-ALTER TABLE "carts_courses" ADD FOREIGN KEY ("cart_id") REFERENCES "carts" ("id");
+ALTER TABLE "users_courses" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
-ALTER TABLE "carts_courses" ADD FOREIGN KEY ("course_id") REFERENCES "courses" ("id");
+ALTER TABLE "course_videos" ADD FOREIGN KEY ("course_id") REFERENCES "courses" ("id");
 
-ALTER TABLE "carts" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+ALTER TABLE "categories_courses" ADD FOREIGN KEY ("category_id") REFERENCES "courses" ("id");
 
-ALTER TABLE "courses" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
+ALTER TABLE "categories_courses" ADD FOREIGN KEY ("course_id") REFERENCES "categories" ("id");
 
-ALTER TABLE "courses" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id");
+ALTER TABLE "courses" ADD FOREIGN KEY ("teacher_id") REFERENCES "teachers" ("id");
 
-ALTER TABLE "courses" ADD FOREIGN KEY ("course_video_id") REFERENCES "course_videos" ("id");
+ALTER TABLE "categories_courses" ADD FOREIGN KEY ("category_id") REFERENCES "categories" ("id");
 
-ALTER TABLE "users_courses" ADD FOREIGN KEY ("course_id") REFERENCES "users" ("id");
+ALTER TABLE "courses" ADD FOREIGN KEY ("level_id") REFERENCES "levels" ("id");
 
-ALTER TABLE "course_images" ADD FOREIGN KEY ("id") REFERENCES "courses" ("id");
+ALTER TABLE "reviews" ADD FOREIGN KEY ("course_id") REFERENCES "courses" ("id");
 
 ALTER TABLE "reviews" ADD FOREIGN KEY ("user_id") REFERENCES "users" ("id");
 
-ALTER TABLE "reviews" ADD FOREIGN KEY ("course_id") REFERENCES "courses" ("id");
+ALTER TABLE "users_courses" ADD FOREIGN KEY ("course_id") REFERENCES "courses" ("id");
+
+ALTER TABLE "categories_courses" ADD FOREIGN KEY ("course_id") REFERENCES "courses" ("id");
+
+
